@@ -1,0 +1,7 @@
+{
+  "verbose": true,
+  "watch": ["src/**"],
+  "ext": "ts,json",
+  "signal": "SIGTERM",
+  "ignore": ["src/**/*.spec.ts"]
+}

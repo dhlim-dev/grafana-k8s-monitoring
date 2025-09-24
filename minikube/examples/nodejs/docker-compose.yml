@@ -1,0 +1,17 @@
+---
+# OATS is an acceptance testing framework for OpenTelemetry
+# https://github.com/grafana/oats/tree/main/yaml
+services:
+  dice-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dice-server
+    container_name: dice-server
+    environment:
+      OTEL_SERVICE_NAME: 'dice-server'
+      OTEL_SERVICE_VERSION: '0.1.0'
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://alloy.monitoring.svc.cluster.local:4318
+      OTEL_METRIC_EXPORT_INTERVAL: '5000' # so we don't have to wait 60s for metrics
+    ports:
+      - '8080:8080'

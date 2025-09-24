@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/grafana/k8s-monitoring-helm/refs/heads/main/charts/k8s-monitoring/values.schema.json
+---
+cluster:
+  name: minikube-monitoring
+
+destinations:
+  - name: prometheus
+    type: prometheus
+    url: http://mimir.monitoring.svc.cluster.local:9009/api/v1/push
+
+  - name: loki
+    type: loki
+    url: http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push
+
+clusterMetrics:
+  enabled: false
+
+clusterEvents:
+  enabled: false
+
+nodeLogs:
+  enabled: false
+
+podLogs:
+  enabled: true
+  # namespaces:
+  #   - prod
+
+alloy-metrics:
+  enabled: false
+  alloy:
+    extraArgs:
+      - --disable-reporting
+alloy-singleton:
+  enabled: false
+  alloy:
+    extraArgs:
+      - --disable-reporting
+alloy-logs:
+  enabled: true
+  liveDebugging: 
+    enabled: true
+  alloy:
+    extraArgs:
+      - --disable-reporting

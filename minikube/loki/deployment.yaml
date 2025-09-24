@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: loki
+  name: loki
+spec:
+  selector:
+    matchLabels:
+      name: loki
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        name: loki
+    spec:
+      containers:
+        - name: loki
+          image: grafana/loki:3.5.3
+          args:
+            - -config.file=/etc/loki/local-config.yaml
+            - -table-manager.retention-period=1d
+            - -table-manager.retention-deletes-enabled=true
+          ports:
+            - containerPort: 3100
+              name: http
+          volumeMounts:
+            - name: loki-config
+              mountPath: /etc/loki
+            # - name: loki-storage
+            #   mountPath: /var/loki
+            - name: loki-pvc
+              mountPath: /var/loki
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+      volumes:
+        - name: loki-config
+          configMap:
+            name: loki-config
+        # - name: loki-storage
+        #   emptyDir: {}
+        - name: loki-pvc
+          persistentVolumeClaim:
+            claimName: loki-pvc
+      restartPolicy: Always
+status: {}

@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: prod
+
+resources:
+  - namespace.yaml
+  - deployment.yaml
+  - service.yaml
+
+commonLabels:
+  app: dice-server
+  component: dice-server
+
+images:
+  - name: dice-server
+    newTag: latest

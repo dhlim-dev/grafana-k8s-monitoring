@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: mimir
+  name: mimir
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mimir
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        name: mimir
+    spec:
+      containers:
+        - name: mimir
+          image: grafana/mimir:2.7.0
+          args:
+            - --config.file=/etc/mimir/mimir.yaml
+          ports:
+            - containerPort: 9009
+              name: http
+          volumeMounts:
+            - name: mimir-config
+              mountPath: /etc/mimir
+            - name: mimir-storage
+              mountPath: /tmp/mimir
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+      volumes:
+        - name: mimir-config
+          configMap:
+            name: mimir-config
+        - name: mimir-storage
+          persistentVolumeClaim:
+            claimName: mimir-pvc
+      restartPolicy: Always
+status: {}

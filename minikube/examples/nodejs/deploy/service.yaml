@@ -1,0 +1,19 @@
+# generate service.yaml from kustomization.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: dice-server
+  labels:
+    app: dice-server
+    component: dice-server
+spec:
+  selector:
+    app: dice-server
+    component: dice-server
+  ports:
+    - name: dice-server
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: LoadBalancer

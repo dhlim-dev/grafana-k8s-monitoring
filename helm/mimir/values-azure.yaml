@@ -1,0 +1,83 @@
+# https://github.com/grafana/mimir/blob/main/operations/helm/charts/mimir-distributed/README.md
+mimir:
+  structuredConfig:
+    common:
+      storage:
+        backend: azure
+        azure:
+          account_name: STORAGE_ACCOUNT_NAME
+          account_key: STORAGE_ACCOUNT_KEY
+    blocks_storage:
+      backend: azure
+      azure:
+        container_name: mimir-blocks
+    ruler_storage:
+      backend: azure
+      azure:
+        container_name: mimir-ruler
+    limits:
+      max_label_names_per_series: 100
+runtimeConfig:
+  ingester_limits: # limits that each ingester replica enforces
+    max_ingestion_rate: 10000000
+    max_series: 2000000
+    max_tenants: 1200
+    max_inflight_push_requests: 35000
+  distributor_limits: # limits that each distributor replica enforces
+    max_ingestion_rate: 10000000
+    max_inflight_push_requests: 35000
+    max_inflight_push_requests_bytes: 500000000
+  overrides:
+    prod: # limits for tenant-1 that the whole cluster enforces
+      ingestion_tenant_shard_size: 10
+      max_global_series_per_user: 2000000
+      max_fetched_series_per_query: 120000
+      out_of_order_time_window: 2h
+      ingestion_rate: 90000000 # tenant-specific ingestion rate limit
+      ingestion_burst_size: 9000000
+nginx:
+  enabled: false
+gateway:
+  enabledNonEnterprise: true
+  service:
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+distributor:
+
+ingester:
+  persistentVolume:
+    enabled: true
+    size: 100Gi
+
+store_gateway:
+  persistentVolume:
+    enabled: true
+    size: 100Gi
+
+compactor:
+  persistentVolume:
+    enabled: true
+    size: 100Gi
+
+
+querier:
+
+query_frontend:
+
+query_scheduler:
+
+rollout_operator:
+
+ruler:
+
+overrides_exporter:
+
+alertmanager:
+  enabled: false
+minio:
+  enabled: false
+gr-aggr-cache:
+  enabled: false
+gr-metricname-cache:
+  enabled: false
