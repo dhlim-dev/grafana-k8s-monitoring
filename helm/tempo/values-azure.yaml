@@ -1,0 +1,71 @@
+storage:
+  trace:
+    backend: azure
+    azure:
+      container_name: tempo-traces
+      storage_account_name: AZURE_STORAGE_ACCOUNT_NAME
+      storage_account_key: AZURE_STORAGE_ACCOUNT_KEY
+
+gateway:
+  enabled: true
+  service:
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+
+distributor:
+  extraArgs:
+    - "-config.expand-env=true"
+  extraEnv:
+    - name: STORAGE_ACCOUNT_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: TEMPO_SECRET
+          key: AZURE_ACCOUNT_KEY
+
+compactor:
+  extraArgs:
+    - "-config.expand-env=true"
+  extraEnv:
+    - name: STORAGE_ACCOUNT_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: TEMPO_SECRET
+          key: AZURE_ACCOUNT_KEY
+
+ingester:
+  extraArgs:
+    - "-config.expand-env=true"
+  extraEnv:
+    - name: STORAGE_ACCOUNT_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: TEMPO_SECRET
+          key: AZURE_ACCOUNT_KEY
+
+querier:
+  extraArgs:
+    - "-config.expand-env=true"
+  extraEnv:
+    - name: STORAGE_ACCOUNT_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: TEMPO_SECRET
+          key: AZURE_ACCOUNT_KEY
+
+queryFrontend:
+  extraArgs:
+    - "-config.expand-env=true"
+  extraEnv:
+    - name: STORAGE_ACCOUNT_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: TEMPO_SECRET
+          key: AZURE_ACCOUNT_KEY
+
+traces:
+  otlp:
+    http:
+      enabled: true
+    grpc:
+      enabled: true

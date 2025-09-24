@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: tempo
+  name: tempo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: tempo
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        name: tempo
+    spec:
+      containers:
+        - name: tempo
+          image: grafana/tempo:2.7.0
+          args:
+            - --config.file=/etc/tempo/tempo.yaml
+            - --target=all
+            - --auth.enabled=false
+          ports:
+            - containerPort: 3200
+          resources: {}
+          volumeMounts:
+            - name: tempo-storage
+              mountPath: /var/tempo
+            - name: tempo-config
+              mountPath: /etc/tempo/tempo.yaml
+              subPath: tempo.yaml
+      volumes:
+        - name: tempo-config
+          configMap:
+            name: tempo-config
+        # - name: tempo-storage
+        #   emptyDir: {}
+        - name: tempo-storage
+          persistentVolumeClaim:
+            claimName: tempo-pvc
+      restartPolicy: Always
+status: {}

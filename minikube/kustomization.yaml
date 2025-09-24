@@ -5,6 +5,7 @@ namespace: monitoring
 
 resources:
   - namespace.yaml
-  - ../../loki
-  - ../../mimir
-  - ../../grafana
+  - loki/
+  - mimir/
+  - grafana/
+  - tempo/
