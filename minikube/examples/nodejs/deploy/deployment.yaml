@@ -9,6 +9,8 @@ spec:
       app: dice-server
   template:
     metadata:
+      annotations:
+        "k8s.grafana.com/scrape": "true"
       labels:
         app: dice-server
     spec:
@@ -22,7 +24,7 @@ spec:
             - name: OTEL_SERVICE_NAME
               value: 'dice-server'
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: http://alloy.monitoring.svc.cluster.local:4318
+              value: http://monitoring-alloy-singleton.monitoring.svc.cluster.local:4318
           readinessProbe:
             httpGet:
               path: /healthz

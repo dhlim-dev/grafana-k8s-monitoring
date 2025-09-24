@@ -1,0 +1,106 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/grafana/k8s-monitoring-helm/refs/heads/main/charts/k8s-monitoring/values.schema.json
+---
+cluster:
+  name: minikube-monitoring
+
+destinations:
+  - name: mimir
+    type: prometheus
+    url: http://mimir.monitoring.svc.cluster.local:9009/api/v1/push
+
+  - name: loki
+    type: loki
+    url: http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push
+
+  - name: tempo
+    type: otlp
+    protocol: http
+    url: http://tempo.monitoring.svc.cluster.local:4318
+    metrics: {enabled: false}
+    logs: {enabled: false}
+
+clusterMetrics:
+  enabled: false
+
+clusterEvents:
+  enabled: false
+
+nodeLogs:
+  enabled: false
+
+podLogs:
+  enabled: true
+  # namespaces:
+  #   - prod
+
+applicationObservability:
+  enabled: true
+  collector: alloy-singleton
+  connectors:
+    grafanaCloudMetrics:
+      enabled: false
+  receivers:
+    otlp:
+      grpc:
+        enabled: true
+        port: 4317
+      http:
+        enabled: true
+        port: 4318
+
+prometheusOperatorObjects:
+  enabled: false
+  # collector: alloy-receiver
+  crds:
+    deploy: true
+  serviceMonitors:
+    enabled: true
+    namespaces:
+      - prod
+
+annotationAutodiscovery:
+  enabled: true
+  collector: alloy-singleton
+  namespaces:
+    - prod
+
+alloy-metrics:
+  enabled: false
+  alloy:
+    extraArgs:
+      - --disable-reporting
+alloy-singleton:
+  enabled: true
+  alloy:
+    extraArgs:
+      - --disable-reporting
+    extraPorts:
+      - name: otlp-grpc
+        port: 4317
+        targetPort: 4317
+        protocol: TCP
+      - name: otlp-http
+        port: 4318
+        targetPort: 4318
+        protocol: TCP
+alloy-logs:
+  enabled: true
+  liveDebugging: 
+    enabled: true
+  alloy:
+    extraArgs:
+      - --disable-reporting
+alloy-receiver:
+  enabled: false
+  alloy:
+    extraArgs:
+      - --disable-reporting
+    extraPorts:
+      - name: otlp-grpc
+        port: 4317
+        targetPort: 4317
+        protocol: TCP
+      - name: otlp-http
+        port: 4318
+        targetPort: 4318
+        protocol: TCP
