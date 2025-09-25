@@ -15,11 +15,21 @@ const logger = getLogger("dice-server");
 const PORT = parseInt(process.env.PORT || "8080");
 const app = express();
 
-app.use(
-  promMiddleware({
-    metricsPath: "/metrics",
-  })
-);
+const promMiddlewareInstance = promMiddleware({
+  metricsPath: "/metrics",
+  requestDurationBuckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
+  requestLengthBuckets: [100, 500, 1000, 5000, 10000, 50000, 100000],
+  responseLengthBuckets: [100, 500, 1000, 5000, 10000, 50000, 100000],
+});
+
+app.use((req, res, next) => {
+  // skip healthz
+  if (req.url === '/healthz') {
+    return next();
+  }
+
+  promMiddlewareInstance(req, res, next);
+});
 
 const httpLogger = pinoHttp({
   logger: getLogger('http'),

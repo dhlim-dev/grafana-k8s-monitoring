@@ -35,7 +35,6 @@ podLogs:
 
 applicationObservability:
   enabled: true
-  collector: alloy-singleton
   connectors:
     grafanaCloudMetrics:
       enabled: false
@@ -50,7 +49,6 @@ applicationObservability:
 
 prometheusOperatorObjects:
   enabled: false
-  # collector: alloy-receiver
   crds:
     deploy: true
   serviceMonitors:
@@ -60,17 +58,17 @@ prometheusOperatorObjects:
 
 annotationAutodiscovery:
   enabled: true
-  collector: alloy-singleton
   namespaces:
     - prod
 
 alloy-metrics:
-  enabled: false
+  enabled: true
   alloy:
     extraArgs:
       - --disable-reporting
+
 alloy-singleton:
-  enabled: true
+  enabled: false
   alloy:
     extraArgs:
       - --disable-reporting
@@ -83,6 +81,7 @@ alloy-singleton:
         port: 4318
         targetPort: 4318
         protocol: TCP
+
 alloy-logs:
   enabled: true
   liveDebugging: 
@@ -90,8 +89,9 @@ alloy-logs:
   alloy:
     extraArgs:
       - --disable-reporting
+
 alloy-receiver:
-  enabled: false
+  enabled: true
   alloy:
     extraArgs:
       - --disable-reporting
