@@ -1,4 +1,5 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/grafana/k8s-monitoring-helm/refs/heads/main/charts/k8s-monitoring/values.schema.json
+# github: https://github.com/grafana/k8s-monitoring-helm
 ---
 cluster:
   name: minikube-monitoring
@@ -20,7 +21,22 @@ destinations:
     logs: {enabled: false}
 
 clusterMetrics:
-  enabled: false
+  enabled: true
+  kube-state-metrics: # dashboard: https://grafana.com/grafana/dashboards/21742-object-s-health-kube-state-metrics-v2/
+    enabled: true
+    podAnnotations: 
+      k8s.grafana.com/scrape: "true"
+      k8s.grafana.com/instance: "kube-state-metrics"
+      k8s.grafana.com/portName: "http"
+  node-exporter: # dashboard: https://grafana.com/grafana/dashboards/1860-node-exporter-full/
+    enabled: true
+    podAnnotations: 
+      k8s.grafana.com/scrape: "true"
+      k8s.grafana.com/instance: "node-exporter"
+      k8s.grafana.com/portName: "metrics"
+  windows-exporter:
+    enabled: false
+    deploy: false
 
 clusterEvents:
   enabled: false
@@ -60,6 +76,7 @@ annotationAutodiscovery:
   enabled: true
   namespaces:
     - prod
+    - monitoring
 
 alloy-metrics:
   enabled: true
