@@ -35,3 +35,14 @@ eval $(minikube -p minikube docker-env)
 make build
 make deploy
 ```
+
+## References
+
+- [Grafana Kubernetes Monitoring](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/kubernetes-monitoring/)
+- [Grafana K8s Monitoring Helm Chart](https://github.com/grafana/k8s-monitoring-helm)
+- [Grafana Mimir](https://grafana.com/docs/mimir/latest/)
+- [Grafana Loki](https://grafana.com/docs/loki/latest/)
+- [Grafana Tempo](https://grafana.com/docs/tempo/latest/)
+- [alloy-scenarios](https://github.com/grafana/alloy-scenarios)
+- [docker-otel-lgtm](https://github.com/grafana/docker-otel-lgtm)
+- [opentelemetry-demo](https://github.com/open-telemetry/opentelemetry-demo)
