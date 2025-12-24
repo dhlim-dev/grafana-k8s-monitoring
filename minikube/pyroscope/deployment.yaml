@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: pyroscope
+  name: pyroscope
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: pyroscope
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        name: pyroscope
+    spec:
+      containers:
+        - name: pyroscope
+          image: grafana/pyroscope:latest
+          args:
+            - server
+            - --config=/etc/pyroscope/pyroscope.yaml
+          ports:
+            - containerPort: 4040
+              name: http
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          volumeMounts:
+            - name: pyroscope-config
+              mountPath: /etc/pyroscope
+            - name: pyroscope-storage
+              mountPath: /var/pyroscope
+      volumes:
+        - name: pyroscope-config
+          configMap:
+            name: pyroscope-config
+        - name: pyroscope-storage
+          persistentVolumeClaim:
+            claimName: pyroscope-pvc
+      restartPolicy: Always
+status: {}
+

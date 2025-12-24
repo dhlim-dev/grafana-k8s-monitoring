@@ -19,6 +19,10 @@ destinations:
     url: http://tempo.monitoring.svc.cluster.local:4318
     metrics: {enabled: false}
     logs: {enabled: false}
+  
+  - name: pyroscope
+    type: pyroscope
+    url: http://pyroscope.monitoring.svc.cluster.local:4040
 
 clusterMetrics:
   enabled: true
@@ -121,3 +125,22 @@ alloy-receiver:
         port: 4318
         targetPort: 4318
         protocol: TCP
+
+profiling:
+  enabled: true
+  # ebpf:
+  #   enabled: false
+  # java:
+  #   enabled: false
+  # pprof:
+  #   enabled: true
+  #   labelSelectors:
+  #     app: dice-server
+  #   namespaces:
+  #     - prod
+
+alloy-profiles:
+  enabled: true
+  alloy:
+    extraArgs:
+      - --disable-reporting

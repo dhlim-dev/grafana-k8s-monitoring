@@ -3,15 +3,18 @@ kind: Deployment
 metadata:
   name: dice-server
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: dice-server
   template:
     metadata:
       annotations:
-        "k8s.grafana.com/scrape": "true"
-        "k8s.grafana.com/instance": "dice-server"
+        k8s.grafana.com/scrape: "true"
+        k8s.grafana.com/instance: "dice-server"
+        profiles.grafana.com/memory.scrape: "true"
+        profiles.grafana.com/memory.path: "/debug/pprof/heap"
+        profiles.grafana.com/cpu.scrape: "true"
       labels:
         app: dice-server
     spec:
@@ -23,9 +26,17 @@ spec:
             - containerPort: 8080
           env:
             - name: OTEL_SERVICE_NAME
-              value: 'dice-server'
+              value: dice-server
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: http://monitoring-alloy-receiver.monitoring.svc.cluster.local:4318
+            # - name: PYROSCOPE_APPLICATION_NAME
+            #   value: dice-server
+            # - name: PYROSCOPE_SERVER_ADDRESS
+            #   value: http://pyroscope.monitoring.svc.cluster.local:4040
+            # - name: PYROSCOPE_WALL_COLLECT_CPU_TIME
+            #   value: 'true'
+            # - name: DEBUG
+            #   value: pyroscope
           readinessProbe:
             httpGet:
               path: /healthz

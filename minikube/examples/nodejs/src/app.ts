@@ -1,6 +1,8 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+import pyroscope from '@pyroscope/nodejs'
+
 import promMiddleware from "express-prometheus-middleware";
 import { trace, SpanStatusCode } from "@opentelemetry/api";
 import pinoHttp from "pino-http";
@@ -22,14 +24,22 @@ const promMiddlewareInstance = promMiddleware({
   responseLengthBuckets: [100, 500, 1000, 5000, 10000, 50000, 100000],
 });
 
+pyroscope.SourceMapper.create(['.']).then((sourceMapper) => {
+  pyroscope.init({
+    sourceMapper: sourceMapper
+  })
+})
+
+app.use(pyroscope.expressMiddleware())
+
 app.use((req, res, next) => {
   // skip healthz
   if (req.url === '/healthz') {
-    return next();
+    return next()
   }
 
-  promMiddlewareInstance(req, res, next);
-});
+  promMiddlewareInstance(req, res, next)
+})
 
 const httpLogger = pinoHttp({
   logger: getLogger('http'),
